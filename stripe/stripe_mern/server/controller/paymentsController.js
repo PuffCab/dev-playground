@@ -1,13 +1,26 @@
 import stripe from "../config/StripeConfig.js";
+import { itemsToPurchase } from "../data/store.js";
 
 const getPaymentIntent = async (req, res) => {
-
+    console.log("req.body", req.body);
     try {
         const stripeSession = await stripe.checkout.sessions.create({
-            payment_method_types: ["card", "paypal"],
+            payment_method_types: ["card", "paypal", "bancontact", "giropay", "klarna", "p24", "sepa_debit", "sofort"],
             mode: "payment",
-            success_url: `${process.env.CLIENT_URL}/success`,
-            cancel_url: `${process.env.CLIENT_URL}/cancel`,
+            success_url: `${process.env.CLIENT_URL}/paymentMern/success`,
+            cancel_url: `${process.env.CLIENT_URL}/paymentMern/cancel`,
+            line_items: req.body.items.map((item) => {   
+                const ourItem = itemsToPurchase.get(item.id);   
+                return {
+                    price_data: {
+                        currency: "eur",
+                        product_data: { name: ourItem.name },
+                        
+                        unit_amount: ourItem.price,
+                    },
+                    quantity: ourItem.quantity,
+                };
+            })
         });
         res.status(200).json({
             message: "Payment intent created",

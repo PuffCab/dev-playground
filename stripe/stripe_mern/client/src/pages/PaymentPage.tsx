@@ -1,10 +1,21 @@
+import { useNavigate } from "react-router";
+import { StripeCheckoutSession } from "@stripe/stripe-js";
+    type APIResponse = {
+    message: string;
+    stripeSession:StripeCheckoutSession ;
+}
+
 
 const PaymentPage = () => {
+    const navigate = useNavigate(); 
     const handlePayment = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         
         const options = {       
             method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
             body: JSON.stringify({
                items: [
                 {
@@ -23,8 +34,9 @@ const PaymentPage = () => {
         const response = await fetch("http://localhost:5000/api/payments/create-payment-intent", options);
        
        if(response.ok){ 
-        const responseData = await response.json();
-        console.log("responseData", responseData);
+        const responseData = await response.json() as APIResponse;
+           console.log("responseData", responseData);
+           navigate(responseData.stripeSession.url);    
        }else{
         console.log("response not ok");
        }
