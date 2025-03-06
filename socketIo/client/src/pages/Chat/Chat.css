@@ -1,8 +1,70 @@
+.chat-body {
+  /* display: grid; */
+  /* place-content: center; */
+  height: 80vh;
+  padding: 36px 36px 100px 36px;
+
+  /* abajo, paara que tome toda la altura el contenido que tomamos */
+  /* grid-template-columns: 1fr; */
+}
+
 #chat {
   border: 1px solid #ccc;
   border-radius: 4px;
   overflow: hidden;
-  width: 350px;
+  /* max-width: 350px; */
   height: 100%;
   position: relative;
+}
+
+#form {
+  bottom: 0;
+  display: flex;
+  left: 0;
+  padding: 4px;
+  position: absolute; /* to send it to the bottom */
+  right: 0;
+}
+
+#message {
+  border-radius: 9999px;
+  border: 1px solid #eee;
+  flex: 1; /* to take as much space as possible */
+  margin: 4px;
+  padding: 0 8px;
+  &:focus {
+    outline: 0;
+  }
+}
+/* #message:has(button) {
+  background-color: #09f;
+} */
+#button-send {
+  background-color: #09f;
+  color: #fff;
+  border: 0;
+  border-radius: 9999px;
+  margin: 4px;
+  &:hover {
+    background: #0cf;
+  }
+}
+
+#chat-status {
+  color: green;
+  &.off {
+    color: red;
+  }
+}
+@media screen and (max-width: 768px) {
+  /* #chat {
+    margin-top: 100px;
+  } */
+  /* when body contains class .active, we style #chat */
+  body:has(.active) {
+    & #chat {
+      margin-top: 8rem;
+      height: 65vh;
+    }
+  }
 }
