@@ -1,11 +1,12 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, RefObject, useEffect, useRef, useState } from "react";
 import "./Chat.css";
 import { socket } from "../../config/socket";
-
+type Message = { message: string; author: string };
 const Chat = () => {
   const [isConnected, setIsConnected] = useState(socket.connected);
+
   console.log("isConnected :>> ", isConnected);
-  const [messages, setMessages] = useState<string[]>([""]);
+  const [messages, setMessages] = useState<Message[]>([]);
 
   const sendMessage = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -15,9 +16,15 @@ const Chat = () => {
     const message = formData.get("message");
     console.log("message :>> ", message);
 
-    socket.timeout(5000).emit("chat message", message, () => {
+    // socket.timeout(5000).emit("chat message", message, () => {
+    //   console.log("message sent");
+    //   console.log("socket :>> ", socket);
+    // });
+    socket.timeout(1000).emit("chat message", message, () => {
       console.log("message sent");
+      console.log("socket :>> ", socket);
     });
+    // messages.scrollTop = messages.scrollHeight;
   };
 
   //! with one useEffect . see pros and cons. here he handle the connection in a component with 2 buttons and the state variable
@@ -30,8 +37,20 @@ const Chat = () => {
       setIsConnected(false);
     }
 
-    function getMessages(value: string) {
-      setMessages((previous) => [...previous, value]);
+    function getMessages(
+      message: string,
+      serverOffset: string,
+      author: string
+    ) {
+      console.log("message getMessages :>> ", message);
+      setMessages((previous) => [
+        ...previous,
+        { message: message, author: author },
+      ]);
+      console.log("socket.auth :>> ", socket.auth);
+      socket.auth.serverOffset = serverOffset;
+
+      scrollToBottom();
     }
 
     socket.on("connect", onConnect);
@@ -68,6 +87,17 @@ const Chat = () => {
   //   };
   // }, [messages]);
   //! ###########
+
+  //! scroll to bottom
+  //#region
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+  //#endregion
   return (
     <div className="chat-body">
       <p id="chat-status" className={isConnected ? "on" : "off"}>
@@ -75,7 +105,7 @@ const Chat = () => {
       </p>
       <ConnectionManager />
       <section id="chat">
-        <Messages messages={messages} />
+        <Messages messages={messages} messagesEndRef={messagesEndRef} />
         <form id="form" onSubmit={sendMessage}>
           <input
             type="text"
@@ -91,6 +121,7 @@ const Chat = () => {
           </button>
         </form>
       </section>
+      <div ref={messagesEndRef} />
     </div>
   );
 };
@@ -114,12 +145,22 @@ function ConnectionManager() {
   );
 }
 
-function Messages({ messages }: { messages: string[] }) {
+function Messages({
+  messages,
+  messagesEndRef,
+}: {
+  messages: Message[];
+  messagesEndRef: RefObject<HTMLDivElement | null>;
+}) {
+  console.log("messages :>> ", messages);
   return (
-    <ul>
+    <ul id="messages">
       {messages.map((msg, index) => (
-        <li key={index}>{msg}</li>
+        <li key={index}>
+          {msg.author} --- {msg.message}
+        </li>
       ))}
+      {/* <div ref={messagesEndRef} /> */}
     </ul>
   );
 }
