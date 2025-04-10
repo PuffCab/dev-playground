@@ -5,7 +5,7 @@ type Message = { message: string; author: string };
 const Chat = () => {
   const [isConnected, setIsConnected] = useState(socket.connected);
 
-  console.log("isConnected :>> ", isConnected);
+  // console.log("isConnected :>> ", isConnected);
   const [messages, setMessages] = useState<Message[]>([]);
 
   const sendMessage = (e: FormEvent<HTMLFormElement>) => {
@@ -42,12 +42,12 @@ const Chat = () => {
       serverOffset: string,
       author: string
     ) {
-      console.log("message getMessages :>> ", message);
+      // console.log("message getMessages :>> ", message);
       setMessages((previous) => [
         ...previous,
         { message: message, author: author },
       ]);
-      console.log("socket.auth :>> ", socket.auth);
+      // console.log("socket.auth :>> ", socket.auth);
       socket.auth.serverOffset = serverOffset;
 
       scrollToBottom();
@@ -105,7 +105,13 @@ const Chat = () => {
       </p>
       <ConnectionManager />
       <section id="chat">
-        <Messages messages={messages} messagesEndRef={messagesEndRef} />
+        {/* <Messages messages={messages} messagesEndRef={messagesEndRef} /> */}
+        {console.log("messages", messages[1])}
+        {messages &&
+          messages.map((msg, index) => {
+            return <ChatMessage msg={msg} key={index} />;
+          })}
+        <div ref={messagesEndRef}></div>
         <form id="form" onSubmit={sendMessage}>
           <input
             type="text"
@@ -121,7 +127,6 @@ const Chat = () => {
           </button>
         </form>
       </section>
-      <div ref={messagesEndRef} />
     </div>
   );
 };
@@ -160,7 +165,16 @@ function Messages({
           {msg.author} --- {msg.message}
         </li>
       ))}
-      {/* <div ref={messagesEndRef} /> */}
+      <div ref={messagesEndRef}></div>
     </ul>
+  );
+}
+
+function ChatMessage({ msg }: { msg: Message }) {
+  console.log("msg :>> ", msg);
+  return (
+    <li>
+      {msg.author} --- {msg.message}
+    </li>
   );
 }

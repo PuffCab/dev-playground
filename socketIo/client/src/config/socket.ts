@@ -4,11 +4,11 @@ import { io } from "socket.io-client";
 //#region
 const getUserName = () => {
   //what we should do here: send the cookie, check the cookie to see if it is a real user...etc... validation
-  console.log("object :>> ", new Date().getSeconds());
+  // console.log("object :>> ", new Date().getSeconds());
   const activeUser = localStorage.getItem("userName");
-  console.log("activeUser :>> ", activeUser);
+  // console.log("activeUser :>> ", activeUser);
   if (activeUser) {
-    console.log("%c active user: " + activeUser);
+    // console.log("%c active user: " + activeUser);
     return activeUser;
   } else {
     const randomUserName = `user-${new Date().getSeconds()}`;

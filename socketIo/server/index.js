@@ -77,6 +77,12 @@ io.on("connection", async (socket) => {
     console.log("user disconnected");
   });
 
+  //! using chat rooms
+  // socket.on("join room", ({roomId, userId}) => {
+  //   socket.join(roomId)
+  //    console.log(`${userId} joined room ${roomId}`.bgYellow);
+  // })
+
   socket.on("chat message", async (message) => {
     console.log("message >>> " + message);
     console.log(" socket.id >>> " + socket.id);
@@ -96,6 +102,7 @@ io.on("connection", async (socket) => {
       return;
     }
     io.emit("chat message", message, createdMsg.postingDate, author); //this will travel into the "serverOffset" property (we can add as many variables as we want, also an object with several)
+    // io.to(message.roomId).emit("chat message", message, createdMsg.postingDate, author); //this will travel into the "serverOffset" property (we can add as many variables as we want, also an object with several)
   });
 
   // console.log("typeof  :>> ", socket.handshake.auth.serverOffset);

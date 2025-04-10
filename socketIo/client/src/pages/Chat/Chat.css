@@ -22,7 +22,7 @@
   display: flex;
   left: 0;
   padding: 4px;
-  position: absolute; /* to send it to the bottom */
+  position: fixed; /* to send it to the bottom */
   right: 0;
 }
 
