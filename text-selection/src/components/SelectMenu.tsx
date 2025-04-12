@@ -61,7 +61,8 @@ function SelectMenu() {
     const message = `"${encodeURIComponent(selectedText)}"`; //use of encodeURIComponent to convert to string certain characters
     const DevURL = `http://localhost:3000/chatbot?text=${message}`;
     const DeployedURL = `https://text-selection-demo.vercel.app/chatbot?text=${message}`;
-    const URL = process.env.MODE === "production" ? DeployedURL : DevURL;
+    const URL = process.env.NODE_ENV === "production" ? DeployedURL : DevURL;
+    console.log("process.env.NODE_ENV :>> ", process.env.NODE_ENV);
     window.open(URL, "chatbot action", "width=550, height=550");
   }
 
