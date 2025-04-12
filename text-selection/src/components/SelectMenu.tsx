@@ -14,6 +14,7 @@ function SelectMenu() {
   const [selectedText, setSelectedText] = useState<string | null>(null);
   const [selectionState, setSelectionState] =
     useState<SelectionStates>("not-selecting");
+  console.log("selectionState :>> ", selectionState);
   const [selectionPosition, setSelectionPosition] =
     useState<RectangleSelection>();
 
